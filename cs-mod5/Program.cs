@@ -34,7 +34,7 @@ namespace cs_mod5
             
         }
 
-
+        /*Ввод питомцев*/
         static string[] GetPetsNames(byte num)
         {
             string[] PetNamesArray = new string[num];
@@ -58,13 +58,89 @@ namespace cs_mod5
             return PetNamesArray;
         }
 
-
-
-
-        /*Запрос данных у пользователя*/
-        static (string Name, string Surname, byte Age, string[] Pets/*, string[] FavColors*/) Anketa()
+        /*Ввод любимых цветов*/
+        static string[] GetColors(byte num)
         {
-            (string Name, string Surname, byte Age, string[] Pets/*, string[] FavColors*/) User;
+            string[] ColorsArray = new string[num];
+            string color;
+            bool Check;
+            for (int i = 0; i < num; i++)
+            {
+                do
+                {
+                    Console.WriteLine("Введите цвет №{0}:", i + 1);
+                    color = Console.ReadLine();
+                    Check = CheckStr(color);
+                    if (!Check)
+                    {
+                        Console.WriteLine("Ошибка!");
+                    }
+                }
+                while (!Check);
+                ColorsArray[i] = color;
+            }
+            return ColorsArray;
+        }
+
+        /*Вывод любимых цветов*/
+        static void DisplayColor(string[] ColorsArray)
+        {
+            
+            foreach (string color in ColorsArray)
+            {
+                switch (color)
+                {
+                    case "красный":
+                        Console.BackgroundColor = ConsoleColor.Red;
+                        Console.ForegroundColor = ConsoleColor.Black;
+                        Console.WriteLine("\tКрасный");
+                        break;
+
+                    case "зеленый":
+                        Console.BackgroundColor = ConsoleColor.Green;
+                        Console.ForegroundColor = ConsoleColor.Black;
+                        Console.WriteLine("\tЗеленый");
+                        break;
+
+                    case "бирюзовый":
+                        Console.BackgroundColor = ConsoleColor.Cyan;
+                        Console.ForegroundColor = ConsoleColor.Black;
+                        Console.WriteLine("\tБирюзовый");
+                        break;
+
+                    case "желтый":
+                        Console.BackgroundColor = ConsoleColor.Yellow;
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.WriteLine("\tжелтый");
+                        break;
+
+                    case "черный":
+                        Console.BackgroundColor = ConsoleColor.Black;
+                        Console.ForegroundColor = ConsoleColor.White;
+                        Console.WriteLine("\tчерный");
+                        break;
+
+                    case "белый":
+                        Console.BackgroundColor = ConsoleColor.White;
+                        Console.ForegroundColor = ConsoleColor.Black;
+                        Console.WriteLine("\tбелый");
+                        break;
+
+                    default:
+                        Console.BackgroundColor = ConsoleColor.Magenta;
+                        Console.ForegroundColor = ConsoleColor.Black;
+                        Console.WriteLine("\t{0}\tЯ не знаю такого цвета! Но мой любимый цвет - пурпурный!", color);
+                        break;
+                }
+                
+            }
+        }
+
+
+    /*Запрос данных у пользователя*/
+    static (string Name, string Surname, byte Age, string[] Pets, string[] FavColors) Anketa()
+        {
+            (string Name, string Surname, byte Age, string[] Pets, string[] FavColors) User;
             bool CheckRes;
             byte NumPets;
             byte NumColors;
@@ -126,26 +202,41 @@ namespace cs_mod5
             }
             else User.Pets = null;
 
+            do
+            {
+                Console.WriteLine("Введите количество ваших любимых цветов (цифрами): ");
+
+                CheckRes = CheckNum(Console.ReadLine(), out NumColors);
+                if (!CheckRes)
+                {
+                    Console.WriteLine("Ошибка!");
+                }
+
+            }
+            while (!CheckRes);
+
+            if (NumColors > 0)
+            {
+                User.FavColors = GetColors(NumColors);
+            }
+            else User.FavColors = null;
+
 
 
             return User;
         }
 
-
-
-        static void Main(string[] args)
+        /*Вывод данных*/
+        static void DisplayUserData((string Name, string Surname, byte Age, string[] PetName, string[] FavColors) user_data)
         {
-            Console.WriteLine("\tАНКЕТА");
-            (string Name, string Surname, byte Age, string[] PetName/*, string[] FavColors*/) user_data;
-            user_data = Anketa();
             Console.WriteLine("Ваше имя: {0} {1}", user_data.Name, user_data.Surname);
             Console.WriteLine("Ваш возраст: {0}", user_data.Age);
-            
+
             if (user_data.PetName == null)
             {
                 Console.WriteLine("У Вас нет питомцев :(");
             }
-            else 
+            else
             {
                 Console.WriteLine("Ваши питомцы: ");
                 foreach (string PetName in user_data.PetName)
@@ -153,6 +244,32 @@ namespace cs_mod5
                     Console.WriteLine("\t{0}", PetName);
                 }
             }
+
+            if (user_data.FavColors == null)
+            {
+                Console.WriteLine("У Вас нет любимых цветов :(");
+            }
+            else
+            {
+                Console.WriteLine("Ваши любимые цвета: ");
+                DisplayColor(user_data.FavColors);
+
+            }
+        }
+
+
+
+
+
+        static void Main(string[] args)
+        {
+            Console.WriteLine("\tАНКЕТА");
+            (string Name, string Surname, byte Age, string[] PetName, string[] FavColors) user_data;
+            user_data = Anketa();
+            DisplayUserData(user_data);
+           
+
+
         }
     }
 }
